@@ -53,7 +53,7 @@ const SetupScreen: React.FC<SetupScreenProps> = ({ onStartGame, error }) => {
                         id="topic"
                         value={topic}
                         onChange={(e) => setTopic(e.target.value)}
-                        className="w-full p-3 border border-gray-300 rounded-md shadow-sm focus:ring-secondary focus:border-secondary"
+                        className="w-full p-3 border border-gray-300 rounded-md shadow-sm focus:ring-secondary focus:border-secondary bg-white"
                     >
                         <option value="" disabled>Select a topic</option>
                         {PRESET_TOPICS.map(t => <option key={t} value={t}>{t}</option>)}
@@ -70,7 +70,7 @@ const SetupScreen: React.FC<SetupScreenProps> = ({ onStartGame, error }) => {
                             value={customTopic}
                             onChange={(e) => setCustomTopic(e.target.value)}
                             placeholder="e.g., The Roman Empire"
-                            className="w-full p-3 border border-gray-300 rounded-md shadow-sm focus:ring-secondary focus:border-secondary"
+                            className="w-full p-3 border border-gray-300 rounded-md shadow-sm focus:ring-secondary focus:border-secondary bg-white"
                         />
                     </div>
                 )}
@@ -85,7 +85,7 @@ const SetupScreen: React.FC<SetupScreenProps> = ({ onStartGame, error }) => {
                             onChange={(e) => setNumQuestions(Math.max(1, Math.min(20, parseInt(e.target.value, 10))))}
                             min="1"
                             max="20"
-                            className="w-full p-3 border border-gray-300 rounded-md shadow-sm focus:ring-secondary focus:border-secondary"
+                            className="w-full p-3 border border-gray-300 rounded-md shadow-sm focus:ring-secondary focus:border-secondary bg-white"
                         />
                     </div>
                      <div>
@@ -94,7 +94,7 @@ const SetupScreen: React.FC<SetupScreenProps> = ({ onStartGame, error }) => {
                             id="difficulty"
                             value={difficulty}
                             onChange={(e) => setDifficulty(e.target.value as Difficulty)}
-                            className="w-full p-3 border border-gray-300 rounded-md shadow-sm focus:ring-secondary focus:border-secondary"
+                            className="w-full p-3 border border-gray-300 rounded-md shadow-sm focus:ring-secondary focus:border-secondary bg-white"
                         >
                             {Object.values(Difficulty).map(d => <option key={d} value={d}>{d}</option>)}
                         </select>
@@ -106,7 +106,7 @@ const SetupScreen: React.FC<SetupScreenProps> = ({ onStartGame, error }) => {
                         id="language"
                         value={language}
                         onChange={(e) => setLanguage(e.target.value)}
-                        className="w-full p-3 border border-gray-300 rounded-md shadow-sm focus:ring-secondary focus:border-secondary"
+                        className="w-full p-3 border border-gray-300 rounded-md shadow-sm focus:ring-secondary focus:border-secondary bg-white"
                     >
                         {LANGUAGES.map(lang => (
                             <option key={lang.name} value={lang.name}>
