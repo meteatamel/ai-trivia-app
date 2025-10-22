@@ -1,0 +1,5 @@
+{
+  "name": "AI Trivia Quest",
+  "description": "An AI-powered trivia game where you can choose any topic, difficulty, and language. The game generates unique questions and a custom image for your chosen topic, with a time-based scoring system to challenge your knowledge.",
+  "requestFramePermissions": []
+}

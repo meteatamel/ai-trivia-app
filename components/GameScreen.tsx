@@ -1,0 +1,102 @@
+
+import React, { useState, useEffect } from 'react';
+import { Question } from '../types';
+import TimerBar from './TimerBar';
+import { QUESTION_TIMER_SECONDS } from '../constants';
+
+interface GameScreenProps {
+    questions: Question[];
+    gameImage: string;
+    topic: string;
+    onGameEnd: (finalScore: number) => void;
+}
+
+const GameScreen: React.FC<GameScreenProps> = ({ questions, gameImage, topic, onGameEnd }) => {
+    const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+    const [score, setScore] = useState(0);
+    const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
+    const [isPaused, setIsPaused] = useState(false);
+    const [timeLeft, setTimeLeft] = useState(QUESTION_TIMER_SECONDS);
+
+    const currentQuestion = questions[currentQuestionIndex];
+    
+    const handleNextQuestion = () => {
+        if (currentQuestionIndex < questions.length - 1) {
+            setCurrentQuestionIndex(prev => prev + 1);
+            setSelectedAnswer(null);
+            setIsPaused(false);
+        } else {
+            onGameEnd(score);
+        }
+    };
+
+    const handleAnswerClick = (option: string) => {
+        if (selectedAnswer) return; // Prevent multiple clicks
+
+        setIsPaused(true);
+        setSelectedAnswer(option);
+
+        if (option === currentQuestion.answer) {
+            const points = Math.max(0, timeLeft * 10);
+            setScore(prev => prev + points);
+        }
+
+        setTimeout(() => {
+            handleNextQuestion();
+        }, 1500); // Wait 1.5 seconds to show feedback
+    };
+
+    const handleTimeUp = () => {
+        setIsPaused(true);
+        setSelectedAnswer(''); // Indicate time ran out
+        setTimeout(() => {
+            handleNextQuestion();
+        }, 1500);
+    };
+
+    const getButtonClass = (option: string) => {
+        if (!selectedAnswer) {
+            return 'bg-secondary hover:bg-blue-600';
+        }
+
+        const isCorrect = option === currentQuestion.answer;
+        const isSelected = option === selectedAnswer;
+
+        if (isCorrect) return 'bg-green-500';
+        if (isSelected && !isCorrect) return 'bg-red-500';
+        
+        return 'bg-gray-400';
+    };
+
+    return (
+        <div className="bg-white p-6 rounded-xl shadow-lg w-full animate-fade-in">
+            <div className="flex justify-between items-center mb-4">
+                <div className="text-lg font-bold text-primary">Score: {score}</div>
+                <div className="text-lg font-semibold text-gray-700">Question {currentQuestionIndex + 1} / {questions.length}</div>
+            </div>
+            
+            <TimerBar key={currentQuestionIndex} onTimeUp={handleTimeUp} isPaused={isPaused} onTick={setTimeLeft} />
+            
+            <img src={gameImage} alt={topic} className="w-full h-48 object-cover rounded-lg mb-4 shadow-md" />
+
+            <div className="text-center mb-6">
+                 <p className="text-xl md:text-2xl font-semibold text-gray-800" dangerouslySetInnerHTML={{ __html: currentQuestion.question }}></p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {currentQuestion.options.map((option, index) => (
+                    <button
+                        key={index}
+                        onClick={() => handleAnswerClick(option)}
+                        disabled={!!selectedAnswer}
+                        className={`p-4 rounded-lg text-white font-semibold transition-all duration-300 transform hover:scale-105 disabled:cursor-not-allowed disabled:transform-none ${getButtonClass(option)}`}
+                        dangerouslySetInnerHTML={{ __html: option }}
+                    >
+                    </button>
+                ))}
+            </div>
+        </div>
+    );
+};
+
+export default GameScreen;

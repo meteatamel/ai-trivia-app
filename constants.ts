@@ -1,0 +1,78 @@
+import { Difficulty } from './types';
+
+export const PRESET_TOPICS = [
+  'World History',
+  'Geography',
+  'Science & Nature',
+  'Art & Literature',
+  'Film & TV',
+  'Music',
+  'Sports',
+  'Technology',
+  'Food & Drink',
+  'Mythology'
+];
+
+export const LANGUAGES = [
+  { name: 'Afrikaans', flagCode: 'ZA' },
+  { name: 'Arabic', flagCode: 'SA' },
+  { name: 'Azerbaijani', flagCode: 'AZ' },
+  { name: 'Bengali', flagCode: 'BD' },
+  { name: 'Bulgarian', flagCode: 'BG' },
+  { name: 'Burmese', flagCode: 'MM' },
+  { name: 'Catalan', flagCode: 'AD' },
+  { name: 'Chinese (Cantonese)', flagCode: 'HK' },
+  { name: 'Chinese (Mandarin)', flagCode: 'CN' },
+  { name: 'Croatian', flagCode: 'HR' },
+  { name: 'Czech', flagCode: 'CZ' },
+  { name: 'Danish', flagCode: 'DK' },
+  { name: 'Dutch', flagCode: 'NL' },
+  { name: 'English', flagCode: 'GB' },
+  { name: 'Farsi (Persian)', flagCode: 'IR' },
+  { name: 'Filipino (Tagalog)', flagCode: 'PH' },
+  { name: 'Finnish', flagCode: 'FI' },
+  { name: 'French', flagCode: 'FR' },
+  { name: 'German', flagCode: 'DE' },
+  { name: 'Greek', flagCode: 'GR' },
+  { name: 'Gujarati', flagCode: 'IN' },
+  { name: 'Hausa', flagCode: 'NG' },
+  { name: 'Hebrew', flagCode: 'IL' },
+  { name: 'Hindi', flagCode: 'IN' },
+  { name: 'Hungarian', flagCode: 'HU' },
+  { name: 'Indonesian', flagCode: 'ID' },
+  { name: 'Italian', flagCode: 'IT' },
+  { name: 'Japanese', flagCode: 'JP' },
+  { name: 'Javanese', flagCode: 'ID' },
+  { name: 'Kannada', flagCode: 'IN' },
+  { name: 'Kazakh', flagCode: 'KZ' },
+  { name: 'Khmer', flagCode: 'KH' },
+  { name: 'Korean', flagCode: 'KR' },
+  { name: 'Malay', flagCode: 'MY' },
+  { name: 'Malayalam', flagCode: 'IN' },
+  { name: 'Marathi', flagCode: 'IN' },
+  { name: 'Norwegian', flagCode: 'NO' },
+  { name: 'Polish', flagCode: 'PL' },
+  { name: 'Portuguese', flagCode: 'PT' },
+  { name: 'Punjabi', flagCode: 'IN' },
+  { name: 'Romanian', flagCode: 'RO' },
+  { name: 'Russian', flagCode: 'RU' },
+  { name: 'Serbian', flagCode: 'RS' },
+  { name: 'Slovak', flagCode: 'SK' },
+  { name: 'Spanish', flagCode: 'ES' },
+  { name: 'Swahili', flagCode: 'KE' },
+  { name: 'Swedish', flagCode: 'SE' },
+  { name: 'Tamil', flagCode: 'LK' },
+  { name: 'Telugu', flagCode: 'IN' },
+  { name: 'Thai', flagCode: 'TH' },
+  { name: 'Turkish', flagCode: 'TR' },
+  { name: 'Ukrainian', flagCode: 'UA' },
+  { name: 'Urdu', flagCode: 'PK' },
+  { name: 'Uzbek', flagCode: 'UZ' },
+  { name: 'Vietnamese', flagCode: 'VN' },
+];
+
+
+export const DEFAULT_NUM_QUESTIONS = 5;
+export const DEFAULT_DIFFICULTY: Difficulty = Difficulty.Easy;
+export const DEFAULT_LANGUAGE = 'English';
+export const QUESTION_TIMER_SECONDS = 10;
