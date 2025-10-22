@@ -1,17 +1,21 @@
 
 import React from 'react';
+import { GameResults } from '../types';
 
 interface ResultsScreenProps {
-    score: number;
+    results: GameResults;
     totalQuestions: number;
     onRestart: () => void;
 }
 
-const ResultsScreen: React.FC<ResultsScreenProps> = ({ score, totalQuestions, onRestart }) => {
+const ResultsScreen: React.FC<ResultsScreenProps> = ({ results, totalQuestions, onRestart }) => {
+    const { score, correctAnswers } = results;
+
     const getResultMessage = () => {
-        const percentage = totalQuestions > 0 ? (score / (totalQuestions * 100)) * 100 : 0;
+        const percentage = totalQuestions > 0 ? (correctAnswers / totalQuestions) * 100 : 0;
+        if (percentage === 100) return "Perfect Score! You're a trivia legend!";
         if (percentage >= 80) return "Excellent! You're a trivia master!";
-        if (percentage >= 50) return "Great job! A very solid score.";
+        if (percentage >= 50) return "Great job! A very solid performance.";
         if (percentage >= 20) return "Good effort! Keep practicing.";
         return "Nice try! Every game is a learning experience.";
     };
@@ -21,9 +25,21 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ score, totalQuestions, on
             <h2 className="text-3xl font-bold text-primary mb-2">Game Over!</h2>
             <p className="text-lg text-gray-600 mb-6">{getResultMessage()}</p>
             
-            <div className="bg-light p-6 rounded-lg mb-8">
-                <p className="text-xl text-gray-700">Your Final Score</p>
-                <p className="text-6xl font-bold text-accent my-2">{score}</p>
+            <div className="bg-light p-6 rounded-lg mb-8 space-y-4">
+                <div>
+                    <p className="text-xl text-gray-700">Your Final Score</p>
+                    <p className="text-6xl font-bold text-accent my-2">{score}</p>
+                </div>
+                <div className="grid grid-cols-2 gap-4 text-center border-t border-gray-200 pt-4">
+                    <div>
+                        <p className="text-sm font-medium text-gray-500">Correct Answers</p>
+                        <p className="text-2xl font-bold text-primary">{correctAnswers} / {totalQuestions}</p>
+                    </div>
+                    <div>
+                        <p className="text-sm font-medium text-gray-500">Avg. Score / Q</p>
+                        <p className="text-2xl font-bold text-primary">{Math.round(totalQuestions > 0 ? score / totalQuestions : 0)}</p>
+                    </div>
+                </div>
             </div>
             
             <button

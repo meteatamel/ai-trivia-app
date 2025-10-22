@@ -19,3 +19,8 @@ export interface GameConfig {
   difficulty: Difficulty;
   language: string;
 }
+
+export interface GameResults {
+  score: number;
+  correctAnswers: number;
+}

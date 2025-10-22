@@ -1,6 +1,6 @@
 
 import React, { useState, useCallback } from 'react';
-import { GameState, Question, GameConfig } from './types';
+import { GameState, Question, GameConfig, GameResults } from './types';
 import SetupScreen from './components/SetupScreen';
 import LoadingScreen from './components/LoadingScreen';
 import GameScreen from './components/GameScreen';
@@ -12,14 +12,14 @@ const App: React.FC = () => {
     const [gameConfig, setGameConfig] = useState<GameConfig | null>(null);
     const [questions, setQuestions] = useState<Question[]>([]);
     const [generatedImage, setGeneratedImage] = useState<string | null>(null);
-    const [score, setScore] = useState(0);
+    const [results, setResults] = useState<GameResults>({ score: 0, correctAnswers: 0 });
     const [error, setError] = useState<string | null>(null);
 
     const startGame = useCallback(async (config: GameConfig) => {
         setGameState('loading');
         setError(null);
         setGameConfig(config);
-        setScore(0);
+        setResults({ score: 0, correctAnswers: 0 });
 
         try {
             const [image, questionsData] = await Promise.all([
@@ -37,8 +37,8 @@ const App: React.FC = () => {
         }
     }, []);
 
-    const handleGameEnd = useCallback((finalScore: number) => {
-        setScore(finalScore);
+    const handleGameEnd = useCallback((finalResults: GameResults) => {
+        setResults(finalResults);
         setGameState('results');
     }, []);
 
@@ -48,7 +48,7 @@ const App: React.FC = () => {
         setQuestions([]);
         setGeneratedImage(null);
         setError(null);
-        setScore(0);
+        setResults({ score: 0, correctAnswers: 0 });
     }, []);
     
     const renderContent = () => {
@@ -72,7 +72,7 @@ const App: React.FC = () => {
                     />
                 );
             case 'results':
-                return <ResultsScreen score={score} totalQuestions={questions.length} onRestart={handleRestart} />;
+                return <ResultsScreen results={results} totalQuestions={questions.length} onRestart={handleRestart} />;
             default:
                 return <SetupScreen onStartGame={startGame} error={error} />;
         }

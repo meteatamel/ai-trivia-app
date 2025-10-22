@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { Question } from '../types';
+import { Question, GameResults } from '../types';
 import TimerBar from './TimerBar';
 import { QUESTION_TIMER_SECONDS } from '../constants';
 
@@ -8,26 +8,33 @@ interface GameScreenProps {
     questions: Question[];
     gameImage: string;
     topic: string;
-    onGameEnd: (finalScore: number) => void;
+    onGameEnd: (results: GameResults) => void;
 }
 
 const GameScreen: React.FC<GameScreenProps> = ({ questions, gameImage, topic, onGameEnd }) => {
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [score, setScore] = useState(0);
+    const [correctAnswers, setCorrectAnswers] = useState(0);
     const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
     const [isPaused, setIsPaused] = useState(false);
     const [timeLeft, setTimeLeft] = useState(QUESTION_TIMER_SECONDS);
 
     const currentQuestion = questions[currentQuestionIndex];
     
-    const handleNextQuestion = () => {
-        if (currentQuestionIndex < questions.length - 1) {
-            setCurrentQuestionIndex(prev => prev + 1);
-            setSelectedAnswer(null);
-            setIsPaused(false);
-        } else {
-            onGameEnd(score);
-        }
+    useEffect(() => {
+        setTimeLeft(QUESTION_TIMER_SECONDS);
+    }, [currentQuestionIndex]);
+
+    const advanceGame = (finalScore: number, finalCorrectAnswers: number) => {
+        setTimeout(() => {
+            if (currentQuestionIndex < questions.length - 1) {
+                setCurrentQuestionIndex(prev => prev + 1);
+                setSelectedAnswer(null);
+                setIsPaused(false);
+            } else {
+                onGameEnd({ score: finalScore, correctAnswers: finalCorrectAnswers });
+            }
+        }, 1500); // Wait 1.5 seconds to show feedback
     };
 
     const handleAnswerClick = (option: string) => {
@@ -38,20 +45,22 @@ const GameScreen: React.FC<GameScreenProps> = ({ questions, gameImage, topic, on
 
         if (option === currentQuestion.answer) {
             const points = Math.max(0, timeLeft * 10);
-            setScore(prev => prev + points);
+            const newScore = score + points;
+            const newCorrectAnswers = correctAnswers + 1;
+            setScore(newScore);
+            setCorrectAnswers(newCorrectAnswers);
+            advanceGame(newScore, newCorrectAnswers);
+        } else {
+            // Wrong answer, advance with current score
+            advanceGame(score, correctAnswers);
         }
-
-        setTimeout(() => {
-            handleNextQuestion();
-        }, 1500); // Wait 1.5 seconds to show feedback
     };
 
     const handleTimeUp = () => {
         setIsPaused(true);
         setSelectedAnswer(''); // Indicate time ran out
-        setTimeout(() => {
-            handleNextQuestion();
-        }, 1500);
+        // Time's up, advance with current score
+        advanceGame(score, correctAnswers);
     };
 
     const getButtonClass = (option: string) => {
