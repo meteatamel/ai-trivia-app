@@ -70,8 +70,15 @@ const GameScreen: React.FC<GameScreenProps> = ({ questions, gameImage, topic, on
         const isCorrect = option === currentQuestion.answer;
         const isSelected = option === selectedAnswer;
 
-        if (isCorrect) return 'bg-green-500';
-        if (isSelected && !isCorrect) return 'bg-red-500';
+        let animationClass = '';
+        if (isCorrect) {
+            animationClass = 'animate-pop';
+        } else if (isSelected && !isCorrect) {
+            animationClass = 'animate-shake';
+        }
+
+        if (isCorrect) return `bg-green-500 ${animationClass}`;
+        if (isSelected && !isCorrect) return `bg-red-500 ${animationClass}`;
         
         return 'bg-gray-400';
     };
@@ -93,8 +100,12 @@ const GameScreen: React.FC<GameScreenProps> = ({ questions, gameImage, topic, on
             
             <img src={gameImage} alt={topic} className="w-full h-48 object-cover rounded-lg mb-4 shadow-md" />
 
-            <div className="text-center mb-6">
-                 <p className="text-xl md:text-2xl font-semibold text-gray-800" dangerouslySetInnerHTML={{ __html: currentQuestion.question }}></p>
+            <div className="text-center mb-6 min-h-[96px] flex items-center justify-center">
+                 <p 
+                    key={currentQuestionIndex}
+                    className="text-xl md:text-2xl font-semibold text-gray-800 animate-fade-in" 
+                    dangerouslySetInnerHTML={{ __html: currentQuestion.question }}
+                ></p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
