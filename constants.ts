@@ -1,17 +1,19 @@
 import { Difficulty } from './types';
 
 export const PRESET_TOPICS = [
-  'World History',
-  'Geography',
-  'Science & Nature',
-  'Art & Literature',
-  'Film & TV',
-  'Music',
-  'Sports',
-  'Technology',
-  'Food & Drink',
-  'Mythology'
+  { name: 'World History', emoji: '📜' },
+  { name: 'Geography', emoji: '🌍' },
+  { name: 'Science & Nature', emoji: '🔬' },
+  { name: 'Art & Literature', emoji: '🎨' },
+  { name: 'Film & TV', emoji: '🎬' },
+  { name: 'Music', emoji: '🎵' },
+  { name: 'Sports', emoji: '⚽' },
+  { name: 'Technology', emoji: '💻' },
+  { name: 'Food & Drink', emoji: '🍔' },
+  { name: 'Mythology', emoji: '🏛️' }
 ];
+
+export const RANDOM_TOPIC = 'Random Topic';
 
 export const LANGUAGES = [
   { name: 'Afrikaans', flagCode: 'ZA' },

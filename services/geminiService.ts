@@ -99,3 +99,37 @@ export const generateTriviaQuestions = async (config: GameConfig): Promise<Quest
         throw new Error("Failed to generate trivia questions. The topic might be too specific or there was an API issue.");
     }
 };
+
+export const generateRandomTopic = async (): Promise<string> => {
+    const ai = getAiClient();
+    const prompt = `Generate a single, interesting, and specific trivia topic. The topic should be suitable for a general audience and not too obscure. Examples: "Ancient Egyptian Mythology", "The History of Jazz Music", "Famous Scientific Discoveries of the 20th Century". Provide only the topic name as a plain string, with no extra text, quotation marks, or formatting.`;
+
+    try {
+        const response = await ai.models.generateContent({
+            model: "gemini-2.5-flash",
+            contents: prompt,
+        });
+        
+        // Trim and remove potential quotation marks from the response
+        const randomTopic = response.text.trim().replace(/^"|"$/g, '');
+        if (!randomTopic) {
+            throw new Error("AI returned an empty topic.");
+        }
+        return randomTopic;
+
+    } catch (error) {
+        console.error("Error generating random topic, using a fallback:", error);
+        // If the API fails, provide a random fallback from a predefined list to ensure the game can still start.
+        const fallbackTopics = [
+          'World Capitals', 
+          'Famous Inventions', 
+          'Classic Literature', 
+          'Marine Biology', 
+          'The Solar System',
+          'Renaissance Art',
+          'World War II History',
+          'Dinosaurs'
+        ];
+        return fallbackTopics[Math.floor(Math.random() * fallbackTopics.length)];
+    }
+};
