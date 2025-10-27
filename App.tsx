@@ -1,4 +1,3 @@
-
 import React, { useState, useCallback } from 'react';
 import { GameState, Question, GameConfig, GameResults } from './types';
 import SetupScreen from './components/SetupScreen';
@@ -6,6 +5,7 @@ import LoadingScreen from './components/LoadingScreen';
 import GameScreen from './components/GameScreen';
 import ResultsScreen from './components/ResultsScreen';
 import { generateTriviaImage, generateTriviaQuestions } from './services/geminiService';
+import { generateThemeFromImage } from './services/colorService';
 
 const App: React.FC = () => {
     const [gameState, setGameState] = useState<GameState>('setup');
@@ -14,6 +14,7 @@ const App: React.FC = () => {
     const [generatedImage, setGeneratedImage] = useState<string | null>(null);
     const [results, setResults] = useState<GameResults>({ score: 0, correctAnswers: 0 });
     const [error, setError] = useState<string | null>(null);
+    const [backgroundColor, setBackgroundColor] = useState<string>('#f0f9ff');
 
     const startGame = useCallback(async (config: GameConfig) => {
         setGameState('loading');
@@ -27,6 +28,10 @@ const App: React.FC = () => {
                 generateTriviaQuestions(config)
             ]);
 
+            generateThemeFromImage(image).then(color => {
+                setBackgroundColor(color);
+            });
+
             setGeneratedImage(image);
             setQuestions(questionsData);
             setGameState('playing');
@@ -34,6 +39,7 @@ const App: React.FC = () => {
             const errorMessage = err instanceof Error ? err.message : "An unknown error occurred.";
             setError(errorMessage);
             setGameState('setup');
+            setBackgroundColor('#f0f9ff'); // Reset on error
         }
     }, []);
 
@@ -49,6 +55,7 @@ const App: React.FC = () => {
         setGeneratedImage(null);
         setError(null);
         setResults({ score: 0, correctAnswers: 0 });
+        setBackgroundColor('#f0f9ff');
     }, []);
     
     const renderContent = () => {
@@ -79,10 +86,13 @@ const App: React.FC = () => {
     };
 
     return (
-        <div className="min-h-screen bg-light font-sans flex flex-col items-center justify-center p-4">
+        <div
+            className="min-h-screen font-sans flex flex-col items-center justify-center p-4 transition-colors duration-1000"
+            style={{ backgroundColor: backgroundColor }}
+        >
             <header className="text-center mb-6 animate-fade-in">
                 <h1 className="text-4xl md:text-5xl font-bold text-primary">AI Trivia Quest</h1>
-                <p className="text-secondary text-lg mt-2">Challenge Your Knowledge on Any Topic!</p>
+                <p className="text-secondary text-lg mt-2">Challenge your knowledge on any topic</p>
             </header>
             <main className="w-full max-w-2xl">
                 {renderContent()}
