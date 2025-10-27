@@ -97,6 +97,11 @@ const App: React.FC = () => {
             <main className="w-full max-w-2xl">
                 {renderContent()}
             </main>
+            <footer className="text-center mt-8 text-gray-500 text-sm animate-fade-in">
+                Vibe coded by <a href="https://www.linkedin.com/in/meteatamel/" target="_blank" rel="noopener noreferrer" className="font-semibold text-secondary hover:underline">Mete Atamel</a>
+                <span className="mx-2">|</span>
+                <a href="https://github.com/meteatamel/ai-trivia-app/issues/new" target="_blank" rel="noopener noreferrer" className="font-semibold text-secondary hover:underline">Feature requests</a>
+            </footer>
         </div>
     );
 };

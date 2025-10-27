@@ -121,7 +121,7 @@ const SetupScreen: React.FC<SetupScreenProps> = ({ onStartGame, error }) => {
                     disabled={isStartDisabled}
                     className="w-full bg-accent text-white font-bold py-3 px-4 rounded-md hover:bg-orange-600 transition-colors duration-300 disabled:bg-gray-400 disabled:cursor-not-allowed transform hover:scale-105"
                 >
-                    Start Trivia Quest
+                    Start
                 </button>
             </form>
         </div>
