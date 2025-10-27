@@ -1,5 +1,4 @@
-
-import React from 'react';
+import React, { useEffect } from 'react';
 import { GameResults } from '../types';
 
 interface ResultsScreenProps {
@@ -8,8 +7,70 @@ interface ResultsScreenProps {
     onRestart: () => void;
 }
 
+declare var confetti: any;
+
 const ResultsScreen: React.FC<ResultsScreenProps> = ({ results, totalQuestions, onRestart }) => {
     const { score, correctAnswers } = results;
+
+    useEffect(() => {
+        const percentage = totalQuestions > 0 ? (correctAnswers / totalQuestions) * 100 : 0;
+        if (percentage < 50 || typeof confetti === 'undefined') {
+            return;
+        }
+
+        const celebrationType = Math.random() < 0.5 ? 'confetti' : 'fireworks';
+        const themeColors = ['#1e40af', '#3b82f6', '#f97316', '#ffffff'];
+
+        if (celebrationType === 'confetti') {
+            const duration = 2 * 1000;
+            const animationEnd = Date.now() + duration;
+
+            const frame = () => {
+                confetti({
+                    particleCount: 2,
+                    angle: 60,
+                    spread: 55,
+                    origin: { x: 0 },
+                    colors: themeColors
+                });
+                confetti({
+                    particleCount: 2,
+                    angle: 120,
+                    spread: 55,
+                    origin: { x: 1 },
+                    colors: themeColors
+                });
+
+                if (Date.now() < animationEnd) {
+                    requestAnimationFrame(frame);
+                }
+            };
+            frame();
+        } else { // fireworks
+            const launchFirework = () => {
+                const origin = { x: Math.random(), y: Math.random() - 0.2 };
+                const defaults = {
+                    origin,
+                    spread: 360,
+                    ticks: 80,
+                    gravity: 0.8,
+                    decay: 0.96,
+                    startVelocity: 25,
+                    shapes: ['star' as const],
+                    colors: themeColors
+                };
+
+                confetti({ ...defaults, particleCount: 50, scalar: 1.2 });
+                confetti({ ...defaults, particleCount: 20, scalar: 0.75, shapes: ['circle' as const] });
+            };
+
+            setTimeout(launchFirework, 0);
+            setTimeout(launchFirework, 300);
+            setTimeout(launchFirework, 600);
+        }
+
+    }, [correctAnswers, totalQuestions]);
+
 
     const getResultMessage = () => {
         const percentage = totalQuestions > 0 ? (correctAnswers / totalQuestions) * 100 : 0;
