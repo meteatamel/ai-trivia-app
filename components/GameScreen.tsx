@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Question, GameResults } from '../types';
 import TimerBar from './TimerBar';
+import { playCorrectSound, playIncorrectSound, playTimeUpSound } from '../services/soundService';
 
 interface GameScreenProps {
     questions: Question[];
@@ -43,6 +44,7 @@ const GameScreen: React.FC<GameScreenProps> = ({ questions, gameImage, topic, on
         setSelectedAnswer(option);
 
         if (option === currentQuestion.answer) {
+            playCorrectSound();
             const points = Math.round((timeLeft / timePerQuestion) * 100);
             const newScore = score + points;
             const newCorrectAnswers = correctAnswers + 1;
@@ -50,6 +52,7 @@ const GameScreen: React.FC<GameScreenProps> = ({ questions, gameImage, topic, on
             setCorrectAnswers(newCorrectAnswers);
             advanceGame(newScore, newCorrectAnswers);
         } else {
+            playIncorrectSound();
             // Wrong answer, advance with current score
             advanceGame(score, correctAnswers);
         }
@@ -58,6 +61,7 @@ const GameScreen: React.FC<GameScreenProps> = ({ questions, gameImage, topic, on
     const handleTimeUp = () => {
         setIsPaused(true);
         setSelectedAnswer(''); // Indicate time ran out
+        playTimeUpSound();
         // Time's up, advance with current score
         advanceGame(score, correctAnswers);
     };

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { PRESET_TOPICS, LANGUAGES, DEFAULT_NUM_QUESTIONS, DEFAULT_DIFFICULTY, DEFAULT_LANGUAGE, RANDOM_TOPIC, DEFAULT_QUESTION_TIMER_SECONDS, TIME_PER_QUESTION_OPTIONS } from '../constants';
 import { GameConfig, Difficulty } from '../types';
 import { generateRandomTopic } from '../services/geminiService';
+import { startAudioContext } from '../services/soundService';
 
 interface SetupScreenProps {
     onStartGame: (config: GameConfig) => void;
@@ -49,6 +50,9 @@ const SetupScreen: React.FC<SetupScreenProps> = ({ onStartGame, error: initialEr
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         setError(null);
+
+        // Initialize audio context on user gesture
+        startAudioContext();
         
         let finalTopic = topic;
         if (topic === 'Other') {
