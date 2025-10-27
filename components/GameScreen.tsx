@@ -1,29 +1,28 @@
-
 import React, { useState, useEffect } from 'react';
 import { Question, GameResults } from '../types';
 import TimerBar from './TimerBar';
-import { QUESTION_TIMER_SECONDS } from '../constants';
 
 interface GameScreenProps {
     questions: Question[];
     gameImage: string;
     topic: string;
     onGameEnd: (results: GameResults) => void;
+    timePerQuestion: number;
 }
 
-const GameScreen: React.FC<GameScreenProps> = ({ questions, gameImage, topic, onGameEnd }) => {
+const GameScreen: React.FC<GameScreenProps> = ({ questions, gameImage, topic, onGameEnd, timePerQuestion }) => {
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [score, setScore] = useState(0);
     const [correctAnswers, setCorrectAnswers] = useState(0);
     const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
     const [isPaused, setIsPaused] = useState(false);
-    const [timeLeft, setTimeLeft] = useState(QUESTION_TIMER_SECONDS);
+    const [timeLeft, setTimeLeft] = useState(timePerQuestion);
 
     const currentQuestion = questions[currentQuestionIndex];
     
     useEffect(() => {
-        setTimeLeft(QUESTION_TIMER_SECONDS);
-    }, [currentQuestionIndex]);
+        setTimeLeft(timePerQuestion);
+    }, [currentQuestionIndex, timePerQuestion]);
 
     const advanceGame = (finalScore: number, finalCorrectAnswers: number) => {
         setTimeout(() => {
@@ -44,7 +43,7 @@ const GameScreen: React.FC<GameScreenProps> = ({ questions, gameImage, topic, on
         setSelectedAnswer(option);
 
         if (option === currentQuestion.answer) {
-            const points = Math.max(0, timeLeft * 10);
+            const points = Math.round((timeLeft / timePerQuestion) * 100);
             const newScore = score + points;
             const newCorrectAnswers = correctAnswers + 1;
             setScore(newScore);
@@ -84,7 +83,13 @@ const GameScreen: React.FC<GameScreenProps> = ({ questions, gameImage, topic, on
                 <div className="text-lg font-semibold text-gray-700">Question {currentQuestionIndex + 1} / {questions.length}</div>
             </div>
             
-            <TimerBar key={currentQuestionIndex} onTimeUp={handleTimeUp} isPaused={isPaused} onTick={setTimeLeft} />
+            <TimerBar 
+                key={currentQuestionIndex} 
+                onTimeUp={handleTimeUp} 
+                isPaused={isPaused} 
+                onTick={setTimeLeft}
+                duration={timePerQuestion}
+            />
             
             <img src={gameImage} alt={topic} className="w-full h-48 object-cover rounded-lg mb-4 shadow-md" />
 

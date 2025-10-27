@@ -1,20 +1,19 @@
-
 import React, { useState, useEffect } from 'react';
-import { QUESTION_TIMER_SECONDS } from '../constants';
 
 interface TimerBarProps {
   onTimeUp: () => void;
   isPaused: boolean;
   onTick: (timeLeft: number) => void;
   key: number; // To reset the timer when the question changes
+  duration: number;
 }
 
-const TimerBar: React.FC<TimerBarProps> = ({ onTimeUp, isPaused, onTick, key }) => {
-  const [timeLeft, setTimeLeft] = useState(QUESTION_TIMER_SECONDS);
+const TimerBar: React.FC<TimerBarProps> = ({ onTimeUp, isPaused, onTick, key, duration }) => {
+  const [timeLeft, setTimeLeft] = useState(duration);
 
   useEffect(() => {
-    setTimeLeft(QUESTION_TIMER_SECONDS);
-  }, [key]);
+    setTimeLeft(duration);
+  }, [key, duration]);
 
   useEffect(() => {
     if (isPaused) return;
@@ -33,9 +32,9 @@ const TimerBar: React.FC<TimerBarProps> = ({ onTimeUp, isPaused, onTick, key }) 
     }, 1000);
 
     return () => clearInterval(timerId);
-  }, [timeLeft, isPaused, onTimeUp, onTick]);
+  }, [timeLeft, isPaused, onTimeUp, onTick, duration]);
 
-  const percentage = (timeLeft / QUESTION_TIMER_SECONDS) * 100;
+  const percentage = (timeLeft / duration) * 100;
   
   const barColor = percentage > 50 ? 'bg-green-500' : percentage > 25 ? 'bg-yellow-500' : 'bg-red-500';
 

@@ -18,6 +18,7 @@ export interface GameConfig {
   numQuestions: number;
   difficulty: Difficulty;
   language: string;
+  timePerQuestion: number;
 }
 
 export interface GameResults {

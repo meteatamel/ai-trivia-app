@@ -77,4 +77,5 @@ export const LANGUAGES = [
 export const DEFAULT_NUM_QUESTIONS = 5;
 export const DEFAULT_DIFFICULTY: Difficulty = Difficulty.Easy;
 export const DEFAULT_LANGUAGE = 'English';
-export const QUESTION_TIMER_SECONDS = 10;
+export const DEFAULT_QUESTION_TIMER_SECONDS = 10;
+export const TIME_PER_QUESTION_OPTIONS = [10, 20, 30];

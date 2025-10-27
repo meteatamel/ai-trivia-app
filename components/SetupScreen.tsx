@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { PRESET_TOPICS, LANGUAGES, DEFAULT_NUM_QUESTIONS, DEFAULT_DIFFICULTY, DEFAULT_LANGUAGE, RANDOM_TOPIC } from '../constants';
+import { PRESET_TOPICS, LANGUAGES, DEFAULT_NUM_QUESTIONS, DEFAULT_DIFFICULTY, DEFAULT_LANGUAGE, RANDOM_TOPIC, DEFAULT_QUESTION_TIMER_SECONDS, TIME_PER_QUESTION_OPTIONS } from '../constants';
 import { GameConfig, Difficulty } from '../types';
 import { generateRandomTopic } from '../services/geminiService';
 
@@ -13,6 +13,7 @@ const SetupScreen: React.FC<SetupScreenProps> = ({ onStartGame, error: initialEr
     const [customTopic, setCustomTopic] = useState('');
     const [randomTopicValue, setRandomTopicValue] = useState('');
     const [numQuestions, setNumQuestions] = useState(DEFAULT_NUM_QUESTIONS);
+    const [timePerQuestion, setTimePerQuestion] = useState(DEFAULT_QUESTION_TIMER_SECONDS);
     const [difficulty, setDifficulty] = useState<Difficulty>(DEFAULT_DIFFICULTY);
     const [language, setLanguage] = useState(DEFAULT_LANGUAGE);
     const [isTopicLoading, setIsTopicLoading] = useState(false);
@@ -66,6 +67,7 @@ const SetupScreen: React.FC<SetupScreenProps> = ({ onStartGame, error: initialEr
             numQuestions,
             difficulty,
             language,
+            timePerQuestion,
         });
     };
     
@@ -156,7 +158,7 @@ const SetupScreen: React.FC<SetupScreenProps> = ({ onStartGame, error: initialEr
                     </div>
                 )}
                 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div>
                         <label htmlFor="num-questions" className="block text-sm font-medium text-gray-700 mb-1">Number of Questions</label>
                         <input
@@ -168,6 +170,17 @@ const SetupScreen: React.FC<SetupScreenProps> = ({ onStartGame, error: initialEr
                             max="20"
                             className="w-full p-3 border border-gray-300 rounded-md shadow-sm focus:ring-secondary focus:border-secondary bg-white"
                         />
+                    </div>
+                     <div>
+                        <label htmlFor="time-per-question" className="block text-sm font-medium text-gray-700 mb-1">Time per question</label>
+                        <select
+                            id="time-per-question"
+                            value={timePerQuestion}
+                            onChange={(e) => setTimePerQuestion(parseInt(e.target.value, 10))}
+                            className="w-full p-3 border border-gray-300 rounded-md shadow-sm focus:ring-secondary focus:border-secondary bg-white"
+                        >
+                            {TIME_PER_QUESTION_OPTIONS.map(time => <option key={time} value={time}>{time} seconds</option>)}
+                        </select>
                     </div>
                      <div>
                         <label htmlFor="difficulty" className="block text-sm font-medium text-gray-700 mb-1">Difficulty</label>

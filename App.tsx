@@ -76,6 +76,7 @@ const App: React.FC = () => {
                         gameImage={generatedImage}
                         topic={gameConfig.topic}
                         onGameEnd={handleGameEnd}
+                        timePerQuestion={gameConfig.timePerQuestion}
                     />
                 );
             case 'results':
