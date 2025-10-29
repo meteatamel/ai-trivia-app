@@ -79,6 +79,24 @@ const SetupScreen: React.FC<SetupScreenProps> = ({ onStartGame, error: initialEr
         (topic === 'Other' && !customTopic.trim()) ||
         (topic === RANDOM_TOPIC && !randomTopicValue.trim()) ||
         !topic;
+        
+    const getDisabledTooltipMessage = () => {
+        if (!topic) {
+            return "Please select a topic to get started.";
+        }
+        if (topic === 'Other' && !customTopic.trim()) {
+            return "Please enter your custom topic.";
+        }
+        if (topic === RANDOM_TOPIC) {
+            if (isTopicLoading) {
+                return "Generating a random topic...";
+            }
+            if (!randomTopicValue.trim()) {
+                return "Click the refresh button to generate a random topic.";
+            }
+        }
+        return ''; // Should not be reached if button is disabled
+    };
 
     const countryCodeToEmoji = (code: string) => {
         const offset = 127397; // Unicode Regional Indicator Symbol Letter A - 'A'.charCodeAt(0)
@@ -214,13 +232,24 @@ const SetupScreen: React.FC<SetupScreenProps> = ({ onStartGame, error: initialEr
                     </select>
                 </div>
 
-                <button
-                    type="submit"
-                    disabled={isStartDisabled}
-                    className="w-full bg-accent text-white font-bold py-3 px-4 rounded-md hover:bg-orange-600 transition-colors duration-300 disabled:bg-gray-400 disabled:cursor-not-allowed transform hover:scale-105"
-                >
-                    Start
-                </button>
+                <div className="relative w-full group pt-2">
+                    <button
+                        type="submit"
+                        disabled={isStartDisabled}
+                        className="w-full bg-accent text-white font-bold py-3 px-4 rounded-md hover:bg-orange-600 transition-colors duration-300 disabled:bg-gray-400 disabled:cursor-not-allowed transform hover:scale-105"
+                    >
+                        Start
+                    </button>
+                    {isStartDisabled && (
+                        <div
+                            className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-max max-w-xs px-3 py-1.5 bg-gray-800 text-white text-sm rounded-md shadow-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10"
+                            role="tooltip"
+                        >
+                            {getDisabledTooltipMessage()}
+                            <div className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0 border-x-4 border-x-transparent border-t-4 border-t-gray-800"></div>
+                        </div>
+                    )}
+                </div>
             </form>
         </div>
     );
