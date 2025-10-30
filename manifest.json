@@ -1,6 +1,6 @@
 {
   "name": "AI Trivia Quest",
-  "short_name": "AI Trivia Quest",
+  "short_name": "AI Trivia",
   "description": "Challenge your knowledge on any topic with AI-powered trivia questions",
   "start_url": "/",
   "display": "standalone",
@@ -20,13 +20,13 @@
   ],
     "screenshots": [
         {
-        "src": "images/screenshot.png",
+        "src": "images/screenshot1.png",
         "sizes": "1080x1920",
         "type": "image/png",
         "form_factor": "narrow"
         },
         {
-        "src": "images/screenshot.png",
+        "src": "images/screenshot2.png",
         "sizes": "1920x1080",
         "type": "image/png",
         "form_factor": "wide"
