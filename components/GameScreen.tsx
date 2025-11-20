@@ -115,7 +115,7 @@ const GameScreen: React.FC<GameScreenProps> = ({ questions, gameImage, topic, on
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {currentQuestion.options.map((option, index) => (
                     <button
-                        key={index}
+                        key={`${currentQuestionIndex}-${index}`}
                         onClick={() => handleAnswerClick(option)}
                         disabled={!!selectedAnswer}
                         className={`p-4 rounded-lg text-white font-semibold transition-all duration-300 transform hover:scale-105 disabled:cursor-not-allowed disabled:transform-none ${getButtonClass(option)}`}
