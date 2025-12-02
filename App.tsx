@@ -43,12 +43,23 @@ const App: React.FC = () => {
         window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
         window.addEventListener('appinstalled', handleAppInstalled);
 
+        // Unregister Service Worker in DEV mode to prevent stale proxying
+        if (import.meta.env.DEV && 'serviceWorker' in navigator) {
+            navigator.serviceWorker.getRegistrations().then(registrations => {
+                for (const registration of registrations) {
+                    registration.unregister().then(success => {
+                        if (success) console.log('Service Worker unregistered in DEV mode');
+                    });
+                }
+            });
+        }
+
         return () => {
             window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
             window.removeEventListener('appinstalled', handleAppInstalled);
         };
     }, []);
-    
+
     const handleInstallClick = async () => {
         if (!installPromptEvent) {
             return;
@@ -101,7 +112,7 @@ const App: React.FC = () => {
         setResults({ score: 0, correctAnswers: 0 });
         setBackgroundColor('#f0f9ff');
     }, []);
-    
+
     const renderContent = () => {
         switch (gameState) {
             case 'setup':
@@ -135,7 +146,7 @@ const App: React.FC = () => {
             className="relative min-h-screen font-sans flex flex-col items-center justify-center p-4 transition-colors duration-1000"
             style={{ backgroundColor: backgroundColor }}
         >
-             {installPromptEvent && (
+            {installPromptEvent && (
                 <button
                     onClick={handleInstallClick}
                     className="absolute top-4 right-4 z-10 flex items-center gap-2 bg-secondary text-white font-bold py-2 px-4 rounded-full shadow-lg hover:bg-blue-600 transition-all duration-300 transform hover:scale-105 animate-fade-in"
