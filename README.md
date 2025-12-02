@@ -28,5 +28,6 @@ View your app in AI Studio: https://ai.studio/apps/drive/1h5Oic7QiGEnfqEJi6UlPCj
 gcloud run deploy ai-trivia-app \
   --source . \
   --set-env-vars GEMINI_API_KEY=your-api-key \
-  --allow-unauthenticated
+  --allow-unauthenticated \
+  --region europe-west1
 ```
