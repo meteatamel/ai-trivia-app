@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { PRESET_TOPICS, LANGUAGES, DEFAULT_NUM_QUESTIONS, DEFAULT_DIFFICULTY, DEFAULT_LANGUAGE, RANDOM_TOPIC, DEFAULT_QUESTION_TIMER_SECONDS, TIME_PER_QUESTION_OPTIONS } from '../constants';
+import { PRESET_TOPICS, LANGUAGES, DEFAULT_NUM_QUESTIONS, DEFAULT_DIFFICULTY, DEFAULT_LANGUAGE, RANDOM_TOPIC, DEFAULT_QUESTION_TIMER_SECONDS } from '../constants';
 import { GameConfig, Difficulty } from '../types';
 import { generateRandomTopic } from '../services/geminiService';
 import { startAudioContext } from '../services/soundService';
@@ -9,21 +9,54 @@ interface SetupScreenProps {
     error: string | null;
 }
 
+const STORAGE_KEY = 'ai-trivia-game-settings';
+
+interface SavedSettings {
+    topic: string;
+    customTopic: string;
+    numQuestions: number;
+    timePerQuestion: number;
+    difficulty: Difficulty;
+    language: string;
+}
+
 const SetupScreen: React.FC<SetupScreenProps> = ({ onStartGame, error: initialError }) => {
-    const [topic, setTopic] = useState('');
-    const [customTopic, setCustomTopic] = useState('');
+    // Load settings from localStorage or use defaults
+    const loadSettings = (): SavedSettings => {
+        try {
+            const saved = localStorage.getItem(STORAGE_KEY);
+            if (saved) {
+                return JSON.parse(saved);
+            }
+        } catch (e) {
+            console.error("Failed to load settings", e);
+        }
+        return {
+            topic: '',
+            customTopic: '',
+            numQuestions: DEFAULT_NUM_QUESTIONS,
+            timePerQuestion: DEFAULT_QUESTION_TIMER_SECONDS,
+            difficulty: DEFAULT_DIFFICULTY,
+            language: DEFAULT_LANGUAGE
+        };
+    };
+
+    const [settings] = useState<SavedSettings>(loadSettings);
+
+    const [topic, setTopic] = useState(settings.topic);
+    const [customTopic, setCustomTopic] = useState(settings.customTopic);
     const [randomTopicValue, setRandomTopicValue] = useState('');
-    const [numQuestions, setNumQuestions] = useState(DEFAULT_NUM_QUESTIONS);
-    const [timePerQuestion, setTimePerQuestion] = useState(DEFAULT_QUESTION_TIMER_SECONDS);
-    const [difficulty, setDifficulty] = useState<Difficulty>(DEFAULT_DIFFICULTY);
-    const [language, setLanguage] = useState(DEFAULT_LANGUAGE);
+    const [numQuestions, setNumQuestions] = useState(settings.numQuestions);
+    const [timePerQuestion, setTimePerQuestion] = useState(settings.timePerQuestion);
+    const [difficulty, setDifficulty] = useState<Difficulty>(settings.difficulty);
+    const [language, setLanguage] = useState(settings.language);
     const [isTopicLoading, setIsTopicLoading] = useState(false);
     const [error, setError] = useState<string | null>(initialError);
 
     useEffect(() => {
         setError(initialError);
     }, [initialError]);
-    
+
     const fetchAndSetRandomTopic = async () => {
         setIsTopicLoading(true);
         setError(null);
@@ -31,8 +64,8 @@ const SetupScreen: React.FC<SetupScreenProps> = ({ onStartGame, error: initialEr
             const newTopic = await generateRandomTopic();
             setRandomTopicValue(newTopic);
         } catch (err) {
-             setError("Failed to generate a random topic. Please try refreshing or pick one from the list.");
-             setRandomTopicValue(''); // Clear on error to allow retry
+            setError("Failed to generate a random topic. Please try refreshing or pick one from the list.");
+            setRandomTopicValue(''); // Clear on error to allow retry
         } finally {
             setIsTopicLoading(false);
         }
@@ -53,7 +86,7 @@ const SetupScreen: React.FC<SetupScreenProps> = ({ onStartGame, error: initialEr
 
         // Initialize audio context on user gesture
         startAudioContext();
-        
+
         let finalTopic = topic;
         if (topic === 'Other') {
             finalTopic = customTopic;
@@ -65,7 +98,18 @@ const SetupScreen: React.FC<SetupScreenProps> = ({ onStartGame, error: initialEr
             setError("Please ensure a topic is selected or entered.");
             return;
         }
-        
+
+        // Save settings
+        const settingsToSave: SavedSettings = {
+            topic,
+            customTopic,
+            numQuestions,
+            timePerQuestion,
+            difficulty,
+            language
+        };
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(settingsToSave));
+
         onStartGame({
             topic: finalTopic,
             numQuestions,
@@ -74,12 +118,12 @@ const SetupScreen: React.FC<SetupScreenProps> = ({ onStartGame, error: initialEr
             timePerQuestion,
         });
     };
-    
+
     const isStartDisabled = isTopicLoading ||
         (topic === 'Other' && !customTopic.trim()) ||
         (topic === RANDOM_TOPIC && !randomTopicValue.trim()) ||
         !topic;
-        
+
     const getDisabledTooltipMessage = () => {
         if (!topic) {
             return "Please select a topic to get started.";
@@ -108,7 +152,7 @@ const SetupScreen: React.FC<SetupScreenProps> = ({ onStartGame, error: initialEr
     return (
         <div className="bg-white p-8 rounded-xl shadow-lg w-full animate-slide-in-up">
             <h2 className="text-2xl font-bold text-center text-primary mb-6">Create Your Game</h2>
-            
+
             {error && (
                 <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4 rounded" role="alert">
                     <p className="font-bold">Oops!</p>
@@ -166,7 +210,7 @@ const SetupScreen: React.FC<SetupScreenProps> = ({ onStartGame, error: initialEr
                                 aria-label="Generate new random topic"
                             >
                                 {isTopicLoading ? (
-                                     <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                    <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                                         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                                         <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                                     </svg>
@@ -179,7 +223,7 @@ const SetupScreen: React.FC<SetupScreenProps> = ({ onStartGame, error: initialEr
                         </div>
                     </div>
                 )}
-                
+
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div>
                         <label htmlFor="num-questions" className="block text-sm font-medium text-gray-700 mb-1">Number of Questions</label>
@@ -193,30 +237,64 @@ const SetupScreen: React.FC<SetupScreenProps> = ({ onStartGame, error: initialEr
                             className="w-full p-3 border border-gray-300 rounded-md shadow-sm focus:ring-secondary focus:border-secondary bg-white"
                         />
                     </div>
-                     <div>
-                        <label htmlFor="time-per-question" className="block text-sm font-medium text-gray-700 mb-1">Time per question</label>
-                        <select
-                            id="time-per-question"
-                            value={timePerQuestion}
-                            onChange={(e) => setTimePerQuestion(parseInt(e.target.value, 10))}
-                            className="w-full p-3 border border-gray-300 rounded-md shadow-sm focus:ring-secondary focus:border-secondary bg-white"
-                        >
-                            {TIME_PER_QUESTION_OPTIONS.map(time => <option key={time} value={time}>{time} seconds</option>)}
-                        </select>
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Time per question</label>
+                        <div className="grid grid-cols-3 gap-2">
+                            {[
+                                { value: 30, label: 'Slow', sub: '30s' },
+                                { value: 20, label: 'Medium', sub: '20s' },
+                                { value: 10, label: 'Fast', sub: '10s' },
+                            ].map((option) => (
+                                <button
+                                    key={option.value}
+                                    type="button"
+                                    onClick={() => setTimePerQuestion(option.value)}
+                                    className={`
+                                        flex flex-col items-center justify-center p-2 rounded-md border transition-all duration-200
+                                        ${timePerQuestion === option.value
+                                            ? 'bg-secondary text-white border-secondary shadow-md transform scale-105'
+                                            : 'bg-white text-gray-700 border-gray-300 hover:border-secondary hover:bg-blue-50'
+                                        }
+                                    `}
+                                >
+                                    <span className="font-bold text-sm">{option.label}</span>
+                                    <span className={`text-xs ${timePerQuestion === option.value ? 'text-blue-100' : 'text-gray-500'}`}>
+                                        {option.sub}
+                                    </span>
+                                </button>
+                            ))}
+                        </div>
                     </div>
-                     <div>
-                        <label htmlFor="difficulty" className="block text-sm font-medium text-gray-700 mb-1">Difficulty</label>
-                        <select
-                            id="difficulty"
-                            value={difficulty}
-                            onChange={(e) => setDifficulty(e.target.value as Difficulty)}
-                            className="w-full p-3 border border-gray-300 rounded-md shadow-sm focus:ring-secondary focus:border-secondary bg-white"
-                        >
-                            {Object.values(Difficulty).map(d => <option key={d} value={d}>{d}</option>)}
-                        </select>
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Difficulty</label>
+                        <div className="grid grid-cols-3 gap-2">
+                            {[
+                                { value: Difficulty.Easy, label: 'Easy', sub: '😌' },
+                                { value: Difficulty.Medium, label: 'Medium', sub: '🤔' },
+                                { value: Difficulty.Hard, label: 'Hard', sub: '🤯' },
+                            ].map((option) => (
+                                <button
+                                    key={option.value}
+                                    type="button"
+                                    onClick={() => setDifficulty(option.value)}
+                                    className={`
+                                        flex flex-col items-center justify-center p-2 rounded-md border transition-all duration-200
+                                        ${difficulty === option.value
+                                            ? 'bg-secondary text-white border-secondary shadow-md transform scale-105'
+                                            : 'bg-white text-gray-700 border-gray-300 hover:border-secondary hover:bg-blue-50'
+                                        }
+                                    `}
+                                >
+                                    <span className="font-bold text-sm">{option.label}</span>
+                                    <span className={`text-xs ${difficulty === option.value ? 'text-blue-100' : 'text-gray-500'}`}>
+                                        {option.sub}
+                                    </span>
+                                </button>
+                            ))}
+                        </div>
                     </div>
                 </div>
-                 <div>
+                <div>
                     <label htmlFor="language" className="block text-sm font-medium text-gray-700 mb-1">Language</label>
                     <select
                         id="language"
