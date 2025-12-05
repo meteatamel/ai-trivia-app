@@ -1,74 +1,67 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>AI Trivia Quest</title>
-    
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-      tailwind.config = {
-        theme: {
-          extend: {
-            colors: {
-              primary: '#1e40af', // blue-800
-              secondary: '#3b82f6', // blue-500
-              accent: '#f97316', // orange-500
-              light: '#f0f9ff', // sky-50
-              dark: '#0c0a09', // stone-950
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Trivia Quest</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#1e40af', // blue-800
+            secondary: '#3b82f6', // blue-500
+            accent: '#f97316', // orange-500
+            light: '#f0f9ff', // sky-50
+            dark: '#0c0a09', // stone-950
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
+          animation: {
+            'fade-in': 'fadeIn 0.5s ease-in-out',
+            'slide-in-up': 'slideInUp 0.5s ease-in-out',
+            'pulse-fast': 'pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+            'shake': 'shake 0.5s ease-in-out',
+            'pop': 'pop 0.3s ease-in-out',
+          },
+          keyframes: {
+            fadeIn: {
+              '0%': { opacity: 0 },
+              '100%': { opacity: 1 },
             },
-            fontFamily: {
-              sans: ['Inter', 'sans-serif'],
+            slideInUp: {
+              '0%': { transform: 'translateY(20px)', opacity: 0 },
+              '100%': { transform: 'translateY(0)', opacity: 1 },
             },
-            animation: {
-              'fade-in': 'fadeIn 0.5s ease-in-out',
-              'slide-in-up': 'slideInUp 0.5s ease-in-out',
-              'pulse-fast': 'pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-              'shake': 'shake 0.5s ease-in-out',
-              'pop': 'pop 0.3s ease-in-out',
+            shake: {
+              '10%, 90%': { transform: 'translateX(-1px)' },
+              '20%, 80%': { transform: 'translateX(2px)' },
+              '30%, 50%, 70%': { transform: 'translateX(-4px)' },
+              '40%, 60%': { transform: 'translateX(4px)' },
             },
-            keyframes: {
-              fadeIn: {
-                '0%': { opacity: 0 },
-                '100%': { opacity: 1 },
-              },
-              slideInUp: {
-                '0%': { transform: 'translateY(20px)', opacity: 0 },
-                '100%': { transform: 'translateY(0)', opacity: 1 },
-              },
-              shake: {
-                '10%, 90%': { transform: 'translateX(-1px)' },
-                '20%, 80%': { transform: 'translateX(2px)' },
-                '30%, 50%, 70%': { transform: 'translateX(-4px)' },
-                '40%, 60%': { transform: 'translateX(4px)' },
-              },
-              pop: {
-                '0%, 100%': { transform: 'scale(1)' },
-                '50%': { transform: 'scale(1.05)' },
-              }
+            pop: {
+              '0%, 100%': { transform: 'scale(1)' },
+              '50%': { transform: 'scale(1.05)' },
             }
           }
         }
       }
-    </script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="manifest" href="/manifest.json">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
-  <script type="importmap">
-{
-  "imports": {
-    "react": "https://aistudiocdn.com/react@^19.2.0",
-    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
-    "react/": "https://aistudiocdn.com/react@^19.2.0/",
-    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.26.0"
-  }
-}
-</script>
+    }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="manifest" href="/manifest.json">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
 </head>
-  <body class="bg-light text-dark">
-    <div id="root"></div>
-    <script type="module" src="/index.tsx"></script>
-  </body>
+
+<body class="bg-light text-dark">
+  <div id="root"></div>
+  <script type="module" src="/index.tsx"></script>
+</body>
+
 </html>
